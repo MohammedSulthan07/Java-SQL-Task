@@ -50,4 +50,10 @@ create table Members (
     join_date date not null default (curdate())
 );
 
+insert into Members (member_name, join_date) values 
+('Ai', '2024-01-15'),
+('Mohammed Sulthan', '2024-03-20'),
+('Rem', '2023-09-18'),
+('Alice', '2024-07-10');
+
 select * from Members where year(join_date) = 2024 order by member_name asc;
