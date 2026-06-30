@@ -1,0 +1,202 @@
+use mydatabase;
+Default schema set to `mydatabase`.
+Fetching global names, object names from `mydatabase` for auto-completion... Press ^C to stop.
+
+
+create table Department(dept_Id int primary key,dept_name varchar(30));
+Query OK, 0 rows affected (0.0463 sec)
+
+
+create table employee(emp_Id int primary key,emp_name varchar(30),dept_Id int,salary int);
+Query OK, 0 rows affected (0.0314 sec)
+
+insert into employee values (1,'Arun',101,45000),(2,'Bhavya',102,52000),(3,'Chitra',101,47000),(4,'Dinesh',103,39000),(5,'Esha',null,41000),(6,'Farhan',104,55000);
+Query OK, 6 rows affected (0.0145 sec)
+
+Records: 6  Duplicates: 0  Warnings: 0
+
+
+insert into Department values(101,'Sales'),(102,'HR'),(103,'IT'),(105,'Marketing');
+Query OK, 4 rows affected (0.0083 sec)
+
+Records: 4  Duplicates: 0  Warnings: 0
+
+
+Inner join
+
+select e.emp_name,d.dept_name,e.salary from employee as e inner join Department as d on e.dept_Id=d.dept_Id;
++----------+-----------+--------+
+| emp_name | dept_name | salary |
++----------+-----------+--------+
+| Arun     | Sales     |  45000 |
+| Bhavya   | HR        |  52000 |
+| Chitra   | Sales     |  47000 |
+| Dinesh   | IT        |  39000 |
++----------+-----------+--------+
+4 rows in set (0.0020 sec)
+
+
+LEFT JOIN
+
+select e.emp_name,d.dept_name,e.salary from employee as e left join Department as d on e.dept_Id=d.dept_Id;
++----------+-----------+--------+
+| emp_name | dept_name | salary |
++----------+-----------+--------+
+| Arun     | Sales     |  45000 |
+| Bhavya   | HR        |  52000 |
+| Chitra   | Sales     |  47000 |
+| Dinesh   | IT        |  39000 |
+| Esha     | NULL      |  41000 |
+| Farhan   | NULL      |  55000 |
++----------+-----------+--------+
+6 rows in set (0.0010 sec)
+
+
+RIGHT JOIN
+
+select e.emp_name,d.dept_name,e.salary from employee as e right join Department as d on e.dept_Id=d.dept_Id;
++----------+-----------+--------+
+| emp_name | dept_name | salary |
++----------+-----------+--------+
+| Chitra   | Sales     |  47000 |
+| Arun     | Sales     |  45000 |
+| Bhavya   | HR        |  52000 |
+| Dinesh   | IT        |  39000 |
+| NULL     | Marketing |   NULL |
++----------+-----------+--------+
+5 rows in set (0.0021 sec)
+
+
+full join --- skip
+
+LEFT ANTI JOIN
+
+select e.emp_name from employee as e left join Department as d on e.dept_Id=d.dept_Id where d.dept_Id is null;
++----------+
+| emp_name |
++----------+
+| Esha     |
+| Farhan   |
++----------+
+2 rows in set (0.0016 sec)
+
+RIGHT ANTI JOIN
+
+select d.dept_name from employee as e right join Department as d on e.dept_Id=d.dept_Id where e.emp_Id is null;
++-----------+
+| dept_name |
++-----------+
+| Marketing |
++-----------+
+1 row in set (0.0020 sec)
+
+INNER JOIN Alternative
+
+select e.emp_name,d.dept_name,e.salary from employee as e,department as d where e.dept_Id=d.dept_Id;
++----------+-----------+--------+
+| emp_name | dept_name | salary |
++----------+-----------+--------+
+| Arun     | Sales     |  45000 |
+| Bhavya   | HR        |  52000 |
+| Chitra   | Sales     |  47000 |
+| Dinesh   | IT        |  39000 |
++----------+-----------+--------+
+4 rows in set (0.0018 sec)
+
+Swap LEFT JOIN ↔ RIGHT JOIN
+
+select e.emp_name,d.dept_name,e.salary from Department as d right join employee as e on e.dept_Id=d.dept_Id;
++----------+-----------+--------+
+| emp_name | dept_name | salary |
++----------+-----------+--------+
+| Arun     | Sales     |  45000 |
+| Bhavya   | HR        |  52000 |
+| Chitra   | Sales     |  47000 |
+| Dinesh   | IT        |  39000 |
+| Esha     | NULL      |  41000 |
+| Farhan   | NULL      |  55000 |
++----------+-----------+--------+
+6 rows in set (0.0019 sec)
+
+select e.emp_name,d.dept_name,e.salary from Department as d left join employee as e on e.dept_Id=d.dept_Id;
++----------+-----------+--------+
+| emp_name | dept_name | salary |
++----------+-----------+--------+
+| Chitra   | Sales     |  47000 |
+| Arun     | Sales     |  45000 |
+| Bhavya   | HR        |  52000 |
+| Dinesh   | IT        |  39000 |
+| NULL     | Marketing |   NULL |
++----------+-----------+--------+
+5 rows in set (0.0022 sec)
+
+
+CROSS JOIN
+
+select e.emp_name,d.dept_name from employee as e cross join Department as d;
++----------+-----------+
+| emp_name | dept_name |
++----------+-----------+
+| Arun     | Marketing |
+| Arun     | IT        |
+| Arun     | HR        |
+| Arun     | Sales     |
+| Bhavya   | Marketing |
+| Bhavya   | IT        |
+| Bhavya   | HR        |
+| Bhavya   | Sales     |
+| Chitra   | Marketing |
+| Chitra   | IT        |
+| Chitra   | HR        |
+| Chitra   | Sales     |
+| Dinesh   | Marketing |
+| Dinesh   | IT        |
+| Dinesh   | HR        |
+| Dinesh   | Sales     |
+| Esha     | Marketing |
+| Esha     | IT        |
+| Esha     | HR        |
+| Esha     | Sales     |
+| Farhan   | Marketing |
+| Farhan   | IT        |
+| Farhan   | HR        |
+| Farhan   | Sales     |
++----------+-----------+
+24 rows in set (0.0029 sec)
+
+SELF JOIN
+
+alter table employee add manager_id int;
+Query OK, 0 rows affected (0.0471 sec)
+
+Records: 0  Duplicates: 0  Warnings: 0
+
+update employee set manager_id=2 where emp_Id=1;
+Query OK, 1 row affected (0.0065 sec)
+
+Rows matched: 1  Changed: 1  Warnings: 0
+ MySQL  localhost:33060+ ssl  mydatabase  SQL > update employee set manager_id=4 where emp_Id=3;
+Query OK, 1 row affected (0.0070 sec)
+
+Rows matched: 1  Changed: 1  Warnings: 0
+ MySQL  localhost:33060+ ssl  mydatabase  SQL > update employee set manager_id=2 where emp_Id=5;
+Query OK, 1 row affected (0.0184 sec)
+
+Rows matched: 1  Changed: 1  Warnings: 0
+ MySQL  localhost:33060+ ssl  mydatabase  SQL > update employee set manager_id=4 where emp_Id=6;
+Query OK, 1 row affected (0.0086 sec)
+
+Rows matched: 1  Changed: 1  Warnings: 0
+
+select e.emp_name as Employee, m.emp_name as Manager from employee e left join employee m on e.manager_id=m.emp_id;
++----------+---------+
+| Employee | Manager |
++----------+---------+
+| Arun     | Bhavya  |
+| Bhavya   | NULL    |
+| Chitra   | Dinesh  |
+| Dinesh   | NULL    |
+| Esha     | Bhavya  |
+| Farhan   | Dinesh  |
++----------+---------+
+6 rows in set (0.0023 sec)
